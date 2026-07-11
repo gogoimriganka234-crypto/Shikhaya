@@ -8,6 +8,10 @@ workflows:
       - name: Unzip project source
         script: |
           unzip -o shikhaya_app_source.zip
+      - name: Generate missing platform folders
+        script: |
+          cd shikhaya
+          flutter create . --project-name shikhaya --org com.shikhaya --platforms android
       - name: Get Flutter packages
         script: |
           cd shikhaya
