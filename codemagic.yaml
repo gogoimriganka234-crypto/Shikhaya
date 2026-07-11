@@ -1,3 +1,4 @@
+
 workflows:
   shikhaya-android:
     name: Shikhaya Android Build
@@ -8,6 +9,9 @@ workflows:
       - name: Unzip project source
         script: |
           unzip -o shikhaya_app_source.zip
+      - name: Copy Firebase config into project
+        script: |
+          cp lib/firebase_options.dart shikhaya/lib/firebase_options.dart
       - name: Generate missing platform folders
         script: |
           cd shikhaya
