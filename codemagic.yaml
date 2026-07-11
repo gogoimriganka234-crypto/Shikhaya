@@ -1,4 +1,3 @@
-
 workflows:
   shikhaya-android:
     name: Shikhaya Android Build
@@ -16,6 +15,32 @@ workflows:
         script: |
           cd shikhaya
           flutter create . --project-name shikhaya --org com.shikhaya --platforms android
+      - name: Fix Kotlin/Java JVM target mismatch
+        script: |
+          cd shikhaya/android
+          cat >> build.gradle.kts << 'EOF'
+
+          subprojects {
+              tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+                  kotlinOptions {
+                      jvmTarget = "11"
+                  }
+              }
+          }
+          EOF
+      - name: Add app icon
+        script: |
+          cd shikhaya
+          mkdir -p assets/icon
+          cp ../shikhaya_app_icon.png assets/icon/icon.png
+          flutter pub add dev:flutter_launcher_icons
+          cat >> pubspec.yaml << 'EOF'
+
+          flutter_launcher_icons:
+            android: true
+            image_path: "assets/icon/icon.png"
+          EOF
+          dart run flutter_launcher_icons
       - name: Get Flutter packages
         script: |
           cd shikhaya
