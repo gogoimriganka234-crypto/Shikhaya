@@ -15,16 +15,19 @@ workflows:
           cd shikhaya
           flutter create . --platforms=android
 
-      - name: Copy Firebase options
+      - name: Firebase options
         script: |
-          cp ../firebase_options.dart lib/firebase_options.dart
+          cd shikhaya
+          echo "firebase_options.dart already exists"
 
       - name: Install packages
         script: |
+          cd shikhaya
           flutter pub get
 
       - name: Build APK
         script: |
+          cd shikhaya
           flutter build apk --release
 
     artifacts:
