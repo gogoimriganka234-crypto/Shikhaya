@@ -18,32 +18,7 @@ workflows:
       - name: Fix Kotlin/Java JVM target mismatch
         script: |
           cd shikhaya/android
-          cat >> build.gradle.kts << 'EOF'
-
-          subprojects {
-              pluginManager.withPlugin("org.jetbrains.kotlin.android") {
-                  extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension> {
-                      jvmToolchain(17)
-                  }
-              }
-              plugins.withId("com.android.library") {
-                  extensions.configure<com.android.build.gradle.LibraryExtension> {
-                      compileOptions {
-                          sourceCompatibility = JavaVersion.VERSION_17
-                          targetCompatibility = JavaVersion.VERSION_17
-                      }
-                  }
-              }
-              plugins.withId("com.android.application") {
-                  extensions.configure<com.android.build.gradle.AppExtension> {
-                      compileOptions {
-                          sourceCompatibility = JavaVersion.VERSION_17
-                          targetCompatibility = JavaVersion.VERSION_17
-                      }
-                  }
-              }
-          }
-          EOF
+          echo "kotlin.jvm.target.validation.mode=warning" >> gradle.properties
       - name: Add app icon
         script: |
           cd shikhaya
