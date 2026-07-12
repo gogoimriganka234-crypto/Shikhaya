@@ -1,53 +1,31 @@
 workflows:
   shikhaya-android:
     name: Shikhaya Android Build
-    max_build_duration: 60
+
     environment:
       flutter: stable
+
     scripts:
-      - name: Unzip project source
+      - name: Unzip source
         script: |
           unzip -o shikhaya_app_source.zip
-      - name: Copy Firebase config into project
-        script: |
-          cp lib/firebase_options.dart shikhaya/lib/firebase_options.dart
-      - name: Generate missing platform folders
-        script: |
-          cd shikhaya
-          flutter create . --project-name shikhaya --org com.shikhaya --platforms android
-      - name: Fix Kotlin/Java JVM target mismatch
-        script: |
-          cd shikhaya/android
-          cat >> build.gradle.kts << 'EOF'
 
-          subprojects {
-              tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-                  kotlinOptions {
-                      jvmTarget = "11"
-                  }
-              }
-          }
-          EOF
-      - name: Add app icon
+      - name: Create Android project
         script: |
           cd shikhaya
-          mkdir -p assets/icon
-          cp ../shikhaya_app_icon.png assets/icon/icon.png
-          flutter pub add dev:flutter_launcher_icons
-          cat >> pubspec.yaml << 'EOF'
+          flutter create . --platforms=android
 
-          flutter_launcher_icons:
-            android: true
-            image_path: "assets/icon/icon.png"
-          EOF
-          dart run flutter_launcher_icons
-      - name: Get Flutter packages
+      - name: Copy Firebase options
         script: |
-          cd shikhaya
+          cp ../firebase_options.dart lib/firebase_options.dart
+
+      - name: Install packages
+        script: |
           flutter pub get
+
       - name: Build APK
         script: |
-          cd shikhaya
           flutter build apk --release
+
     artifacts:
       - shikhaya/build/**/outputs/**/*.apk
